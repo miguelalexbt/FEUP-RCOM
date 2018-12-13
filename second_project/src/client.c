@@ -250,14 +250,12 @@ void ftp_transfer() {
 
 void ftp_disconnect() {
     
-    printf("[Client]: Disconnecting from server.\n");
+    printf("[Client]: Closing client.\n");
 
     if (close(client.ctrl_socket) < 0) {
         perror("close()");
         exit(-1);
     }
-
-    printf("[Client]: Disconnected from server.\n");
 }
 
 int ftp_write(char* verb, char* param) {
