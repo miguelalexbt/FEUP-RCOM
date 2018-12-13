@@ -48,12 +48,9 @@ void ftp_create(char* args) {
         matches = sscanf(args, "ftp://%[^:]:%[^@]@%[^/]/%[^\n]", client.user, client.pass, client.host, client.url);
     } else {
         matches = sscanf(args, "ftp://%[^/]/%[^\n]", client.host, client.url);
-
+        matches += 2;
         snprintf(client.user, sizeof(client.user), "anonymous");
         snprintf(client.pass, sizeof(client.pass), "anonymous");
-                
-        // User + pass
-        matches += 2;
     }
 
     if (matches != 4) {
@@ -209,6 +206,7 @@ void ftp_transfer() {
     char buf[BUF_SIZE];
     int num_bytes = 0;
 
+    // Clear buffer
     if (memset(buf, 0, sizeof(buf)) == NULL) {
         perror("memset()");
         exit(EXIT_FAILURE);
@@ -288,12 +286,12 @@ int ftp_write(char* verb, char* param) {
 int ftp_read() {
 
     // Clear message buffer
-    int offset = 0;
-
     if (memset(msg_buf, 0, sizeof(msg_buf)) == NULL) {
         perror("memset()");
         exit(-1);
     }
+
+    int offset = 0;
 
     do {
         // Clear buffer
