@@ -134,18 +134,8 @@ void ftp_connect_data() {
         exit(EXIT_FAILURE);
     }
 
-    // Get port from response
-    int comma_cnt = 0;
-    size_t i;
-    for (i = 4; i < strlen(msg_buf); ++i) {
-        if (comma_cnt == 4)
-            break;
-        else if (msg_buf[i] == ',')
-            ++comma_cnt;
-    }
-
     int msb, lsb;
-    sscanf(msg_buf + i, "%d,%d*", &msb, &lsb);
+    sscanf(msg_buf, "%*[^,],%*d,%*d,%*d,%d,%d%*[^\012]", &msb, &lsb);
 
     int port = msb * 256 + lsb;
 
@@ -310,8 +300,13 @@ int ftp_read() {
         } while(buf[strlen(buf) - 1] != '\012');
 
         // Copy contents to message buffer (strtok will destroy buf)
-        memcpy(msg_buf + offset, buf, bytes_read);
-        offset += bytes_read;
+        if (offset + bytes_read < (int) sizeof(msg_buf)) {
+            memcpy(msg_buf + offset, buf, bytes_read);
+            offset += bytes_read;
+        } else {
+            printf(" [Client]: Buffer is out of memory.");
+            exit(EXIT_FAILURE);
+        }
 
         // Check for end line (ex: "XXX message here") and return it
         char* pch = strtok(buf, "\012");
@@ -366,7 +361,7 @@ void ftp_progress(int curr, int max) {
 
     int num = (int) (percentage * 100);
 
-    printf("[Client]: %.3d%% [", num);
+    printf("[Client]: %d%% [", num);
 
     int i = 0;
     do {
@@ -377,9 +372,9 @@ void ftp_progress(int curr, int max) {
     } while (i++ < 50);
 
     if (num == 100)
-        printf("]\n");
+        printf("] %d/%d bytes\n", curr, max);
     else
-        printf("]");
+        printf("] %d/%d bytes", curr, max);
 
     fflush(stdout);
 }
