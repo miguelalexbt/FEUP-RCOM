@@ -169,7 +169,7 @@ void ftp_transfer() {
     ftp_write("SIZE", client.url);
 
     if (ftp_read() != ACK) {
-        printf(" Server rejected request.\n");
+        printf("[Client]: Server rejected request.\n");
         exit(EXIT_FAILURE);
     };
 
@@ -304,7 +304,7 @@ int ftp_read() {
             memcpy(msg_buf + offset, buf, bytes_read);
             offset += bytes_read;
         } else {
-            printf(" [Client]: Buffer is out of memory.");
+            printf("[Client]: Buffer is out of memory.");
             exit(EXIT_FAILURE);
         }
 
