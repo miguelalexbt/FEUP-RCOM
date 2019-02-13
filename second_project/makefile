@@ -1,5 +1,5 @@
 CC=gcc 
-CFLAGS=-Wall -Wextra -O2
+CFLAGS=-Wall -Wextra -Werror -O2
 
 default:
 	$(CC) main.c src/client.c -Iinclude -o download $(CFLAGS)

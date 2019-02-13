@@ -111,6 +111,9 @@ char* ftp_get_ip(char* host);
  */
 char* ftp_get_path();
 
+/**
+ * Progress bar.
+ */
 void ftp_progress(int curr, int max);
 
 #endif
